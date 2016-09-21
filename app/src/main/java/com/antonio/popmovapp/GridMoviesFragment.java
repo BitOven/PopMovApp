@@ -1,8 +1,10 @@
 package com.antonio.popmovapp;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,7 +66,7 @@ public class GridMoviesFragment extends Fragment {
     public void onStart() {
         super.onStart();
         DownloadMovies downloadMovies = new DownloadMovies();
-        downloadMovies.execute("top_rated");
+        downloadMovies.execute(getLocationPref());
     }
 
     public class DownloadMovies extends AsyncTask<String,Void,String[]> {
@@ -180,6 +182,11 @@ public class GridMoviesFragment extends Fragment {
         }
 
         return posterPath;
+    }
+
+    private String getLocationPref(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        return prefs.getString(getString(R.string.pref_movie_sort_by_key),getString(R.string.pref_movie_sort_by_default));
     }
 
 }
