@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class GridMoviesFragment extends Fragment {
 
-    private ArrayList<String> movieList = new ArrayList<>();
+    private ArrayList<MovieListStore> movieList = new ArrayList<>();
     private GridMoviesAdapter moviesAdapter;
 
     public GridMoviesFragment() {
@@ -69,9 +69,9 @@ public class GridMoviesFragment extends Fragment {
         downloadMovies.execute(getLocationPref());
     }
 
-    public class DownloadMovies extends AsyncTask<String,Void,String[]> {
+    public class DownloadMovies extends AsyncTask<String,Void,String> {
         @Override
-        protected String[] doInBackground(String... params) {
+        protected String doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
@@ -142,46 +142,48 @@ public class GridMoviesFragment extends Fragment {
                     }
                 }
             }
-            try {
-                Log.d("AsyncTaskDOwnloadMovies","El json recibido es: "+movieJsonStr);
-                return getMovieDataFromJson(movieJsonStr);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return null;
-            }
+            return movieJsonStr;
         }
 
         @Override
-        protected void onPostExecute(String[] strings) {
-            super.onPostExecute(strings);
-            if(strings != null){
+        protected void onPostExecute(String params2) {
+            super.onPostExecute(params2);
+            if(!params2.isEmpty()){
                 movieList.clear();
-                for(String moviePosterString : strings) {
-                    movieList.add(moviePosterString);
+                try {
+                    Log.d("AsyncTaskDOwnloadMovies", "El json recibido es: " + params2);
+                    movieList.addAll(getMovieDataFromJson(params2));
+                } catch (JSONException e){
+                    e.printStackTrace();
                 }
                 moviesAdapter.notifyDataSetChanged();
             }
         }
     }
-    private String[] getMovieDataFromJson(String jsonStr) throws JSONException{
+    private ArrayList<MovieListStore> getMovieDataFromJson(String jsonStr) throws JSONException{
 
         // These are the names of the JSON objects that need to be extracted.
-        //final String TMDB_TITLE = "original_title";
+        ArrayList<MovieListStore> listadoArray = new ArrayList<>();
+        final String TMDB_TITLE = "original_title";
         final String TMDB_POSTER = "poster_path";
-        //final String TMDB_SYNOPSIS = "overview";
-        //final String TMDB_RATE = "vote_average";
-        //final String TMDB_REL_DATE = "release_date";
+        final String TMDB_SYNOPSIS = "overview";
+        final String TMDB_RATE = "vote_average";
+        final String TMDB_REL_DATE = "release_date";
         final String TMDB_RESULTS = "results";
 
         JSONObject moviesJson = new JSONObject(jsonStr);
         JSONArray moviesArray = moviesJson.getJSONArray(TMDB_RESULTS);
 
-        String[] posterPath= new String[moviesArray.length()];
         for (int i=0; i<moviesArray.length();i++){
-            posterPath[i]= moviesArray.getJSONObject(i).getString(TMDB_POSTER);
+            String poster= moviesArray.getJSONObject(i).getString(TMDB_POSTER);
+            String oTitle= moviesArray.getJSONObject(i).getString(TMDB_TITLE);
+            String sinop= moviesArray.getJSONObject(i).getString(TMDB_SYNOPSIS);
+            String rDate= moviesArray.getJSONObject(i).getString(TMDB_REL_DATE);
+            double votes= moviesArray.getJSONObject(i).getDouble(TMDB_RATE);
+            listadoArray.add(new MovieListStore(oTitle,sinop,poster,rDate,votes));
         }
 
-        return posterPath;
+        return listadoArray;
     }
 
     private String getLocationPref(){

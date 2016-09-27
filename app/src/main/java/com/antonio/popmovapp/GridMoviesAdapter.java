@@ -19,14 +19,14 @@ public class GridMoviesAdapter extends BaseAdapter {
     int layoutImage;
     int layoutText;
     int layout;
-    ArrayList<String> movieTitles = new ArrayList<>();
+    ArrayList<MovieListStore> movieTitles = new ArrayList<>();
 
-    public GridMoviesAdapter(Context ctx, ArrayList<String> movieTitlesList) {
+    public GridMoviesAdapter(Context ctx, ArrayList<MovieListStore> movieTitlesList) {
         contexto=ctx;
         movieTitles=movieTitlesList;
     }
 
-    public GridMoviesAdapter(Context ctx, ArrayList<String> movieTitlesList, int layoutR, int layoutIdText, int layoutIdImage) {
+    public GridMoviesAdapter(Context ctx, ArrayList<MovieListStore> movieTitlesList, int layoutR, int layoutIdText, int layoutIdImage) {
         contexto=ctx;
         movieTitles=movieTitlesList;
         layoutImage= layoutIdImage;
@@ -60,7 +60,7 @@ public class GridMoviesAdapter extends BaseAdapter {
         }
         ImageView movieImageView = (ImageView) movieView.findViewById(layoutImage);
 
-        Uri builtUri= Uri.parse("http://image.tmdb.org/t/p/"+"w500/"+movieTitles.get(i)).buildUpon()
+        Uri builtUri= Uri.parse("http://image.tmdb.org/t/p/"+"w500/"+movieTitles.get(i).getPosterPath()).buildUpon()
                 .build();
 
         Picasso.with(contexto).load(builtUri).into(movieImageView);
