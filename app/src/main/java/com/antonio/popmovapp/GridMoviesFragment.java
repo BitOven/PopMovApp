@@ -1,5 +1,6 @@
 package com.antonio.popmovapp;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -57,6 +58,11 @@ public class GridMoviesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Intent details
+                ArrayList<MovieListStore> listado = new ArrayList<MovieListStore>();
+                if(!listado.isEmpty())listado.clear();
+                listado.add(movieList.get(i));
+                Intent intent = new Intent(getActivity(),DetailActivity.class).putExtra(Intent.EXTRA_TEXT, listado);
+                startActivity(intent);
             }
         });
         return view;
