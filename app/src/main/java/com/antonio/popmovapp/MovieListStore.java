@@ -1,9 +1,11 @@
 package com.antonio.popmovapp;
 
+import java.io.Serializable;
+
 /**
  * Created by Antonio on 27/09/2016.
  */
-public class MovieListStore {
+public class MovieListStore implements Serializable {
 
     private String title, overview, posterPath, date;
     private double rate;

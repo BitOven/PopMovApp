@@ -58,10 +58,12 @@ public class GridMoviesFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //Intent details
-                ArrayList<MovieListStore> listado = new ArrayList<MovieListStore>();
+                ArrayList<MovieListStore> listado = new ArrayList<>();
                 if(!listado.isEmpty())listado.clear();
                 listado.add(movieList.get(i));
-                Intent intent = new Intent(getActivity(),DetailActivity.class).putExtra(Intent.EXTRA_TEXT, listado);
+                //Bundle args = new Bundle();
+                //args.putSerializable("array",listado);
+                Intent intent = new Intent(getActivity(),DetailActivity.class).putExtra("array",listado);
                 startActivity(intent);
             }
         });

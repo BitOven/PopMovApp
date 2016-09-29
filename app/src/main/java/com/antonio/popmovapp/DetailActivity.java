@@ -1,6 +1,7 @@
 package com.antonio.popmovapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +11,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -54,7 +58,7 @@ public class DetailActivity extends AppCompatActivity {
     public static class PlaceholderFragment extends Fragment {
 
         private static final String LOG_TAG = PlaceholderFragment.class.getSimpleName();
-        private ArrayList<MovieListStore> mForecastStr = new ArrayList<>();
+        private ArrayList<MovieListStore> movieInfo = new ArrayList<>();
 
         public PlaceholderFragment() {
             setHasOptionsMenu(true);
@@ -66,9 +70,24 @@ public class DetailActivity extends AppCompatActivity {
 
             View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-            mForecastStr.addAll((ArrayList<MovieListStore>)getActivity().getIntent().getSerializableExtra(Intent.EXTRA_TEXT));
+            movieInfo.addAll((ArrayList<MovieListStore>)getActivity().getIntent().getSerializableExtra("array"));
+            //Cargamos titulo original
+            TextView title = (TextView) rootView.findViewById(R.id.textTitle);
+            title.setText(movieInfo.get(0).getTitle());
+            //Cargamos imagen del poster
+            ImageView poster = (ImageView) rootView.findViewById(R.id.imagePoster);
+            Uri builtUri= Uri.parse("http://image.tmdb.org/t/p/"+"w500/"+movieInfo.get(0).getPosterPath()).buildUpon()
+                    .build();
+            Picasso.with(getActivity()).load(builtUri).into(poster);
+            //Cargamos fecha
+            TextView date = (TextView) rootView.findViewById(R.id.textDate);
+            date.setText(movieInfo.get(0).getDate());
+            //Caargamos puntuacion
+            TextView rate = (TextView) rootView.findViewById(R.id.textRate);
+            rate.setText(String.valueOf(movieInfo.get(0).getRate()));
+            //Cargamos sinopsis
             TextView textoDescriptivo = (TextView) rootView.findViewById(R.id.textReview);
-            textoDescriptivo.setText(mForecastStr.get(0).getOverview());
+            textoDescriptivo.setText(movieInfo.get(0).getOverview());
 
             return rootView;
         }
